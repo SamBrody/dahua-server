@@ -1,0 +1,36 @@
+{
+  "runtimeTarget": {
+    "name": ".NETCoreApp,Version=v8.0",
+    "signature": ""
+  },
+  "compilationOptions": {},
+  "targets": {
+    ".NETCoreApp,Version=v8.0": {
+      "Dahua.Server/1.0.0": {
+        "dependencies": {
+          "NetSDKCS": "1.0.0"
+        },
+        "runtime": {
+          "Dahua.Server.dll": {}
+        }
+      },
+      "NetSDKCS/1.0.0": {
+        "runtime": {
+          "NetSDKCS.dll": {}
+        }
+      }
+    }
+  },
+  "libraries": {
+    "Dahua.Server/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    },
+    "NetSDKCS/1.0.0": {
+      "type": "project",
+      "serviceable": false,
+      "sha512": ""
+    }
+  }
+}

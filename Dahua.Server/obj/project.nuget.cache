@@ -1,0 +1,15 @@
+{
+  "version": 2,
+  "dgSpecHash": "5lWh+a8LIiN2zH2hSMqECctsYXyeM5dYgxgBM4hR548F6x86v67GGW0i7mH9NhNGzOCNQ+MhtyOt9LCQ7sQGYQ==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\szh\\RiderProjects\\DahuaServer\\Dahua.Server\\Dahua.Server.csproj",
+  "expectedPackageFiles": [],
+  "logs": [
+    {
+      "code": "NU1803",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "You are running the 'restore' operation with an 'HTTP' source, 'http://10.214.1.247:5555/v3/index.json'. Non-HTTPS access will be removed in a future version. Consider migrating to an 'HTTPS' source."
+    }
+  ]
+}

@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "jq1nj0Q706AcfML7ne0JCeP5K0cmk4eev1/Gn1mz6Jw=",
+  "Source": "Dahua.Server",
+  "BasePath": "_content/Dahua.Server",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
