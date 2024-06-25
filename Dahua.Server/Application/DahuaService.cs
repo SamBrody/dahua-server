@@ -1,6 +1,7 @@
 ﻿using System.Runtime.InteropServices;
 using Dahua.Server.Configuration;
 using Dahua.Server.Model;
+using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Options;
 using NetSDKCS;
 
@@ -14,6 +15,7 @@ public interface IDahuaService {
 public class DahuaService : IDahuaService {
     private readonly DahuaOptions cfg;
     private readonly ILogger logger;
+    private readonly IHubContext<EventHub> hub;
     
     private static fDisConnectCallBack m_DisConnectCallBack;
     private static fHaveReConnectCallBack m_ReConnectCallBack;
@@ -25,10 +27,15 @@ public class DahuaService : IDahuaService {
     private IntPtr m_RealPlayID = IntPtr.Zero;
     private IntPtr m_EventID = IntPtr.Zero;
     
-    public DahuaService(IOptions<DahuaOptions> options, ILogger<DahuaService> logger) {
+    public DahuaService(
+        IOptions<DahuaOptions> options,
+        ILogger<DahuaService> logger,
+        IHubContext<EventHub> hub
+    ) {
         cfg = options.Value;
         this.logger = logger;
-        
+        this.hub = hub;
+
         m_DisConnectCallBack = DisConnectCallBack;
         m_ReConnectCallBack = ReConnectCallBack;
         m_AnalyzeHandleCallBack = AnalyzerDataCallBack;
@@ -56,7 +63,7 @@ public class DahuaService : IDahuaService {
         if (type == EM_EVENT_IVS_TYPE.CROSSREGIONDETECTION) {
             var info = (NET_DEV_EVENT_CROSSREGION_INFO)Marshal.PtrToStructure(pEventInfo, typeof(NET_DEV_EVENT_CROSSREGION_INFO));
                 
-            var evInfo = new EventInfo {
+            var eventInfo = new EventInfo {
                 EventId = info.nEventID,
                 ChannelId = info.nChannelID,
                 DetectRegion = info.DetectRegion.Take(4).ToArray(),
@@ -66,7 +73,9 @@ public class DahuaService : IDahuaService {
                 RegisteredAt = info.UTC.ToDateTime().ToUniversalTime(),
             };
                 
-            logger.LogInformation($"Detect {type} event: {evInfo}");
+            logger.LogInformation($"Detect {type} event");
+
+            hub.Clients.All.SendAsync("Receive", eventInfo);
         }
 
         return 0;

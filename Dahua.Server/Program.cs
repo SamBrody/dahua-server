@@ -6,9 +6,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Logging.ClearProviders();
 builder.Logging.AddConsole();
 
-builder.Services.AddSignalR(opt => {
-    opt.EnableDetailedErrors = true;
-});
+builder.Services.AddSignalR();
 
 builder.Services.Configure<DahuaOptions>(builder.Configuration.GetSection(DahuaOptions.Section));
 
@@ -21,6 +19,6 @@ var app = builder.Build();
 app.UseDefaultFiles();
 app.UseStaticFiles();
 
-app.MapHub<AlarmHub>("/alarm");
+app.MapHub<EventHub>("/event");
 
 app.Run();
