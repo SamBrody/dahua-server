@@ -1,6 +1,4 @@
-﻿using NetSDKCS;
-
-namespace Dahua.Server.Model;
+﻿namespace Dahua.Server.Model;
 
 public class EventInfo {
     public int EventId { get; set; }

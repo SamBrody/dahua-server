@@ -1,4 +1,5 @@
 ﻿using System.Runtime.InteropServices;
+using System.Text;
 using Dahua.Server.Configuration;
 using Dahua.Server.Model;
 using Microsoft.AspNetCore.SignalR;
@@ -66,7 +67,7 @@ public class DahuaService : IDahuaService {
 
             var center = info.stuObject.Center;
             var boundingBox = info.stuObject.BoundingBox;
-            var objectType = System.Text.Encoding.Default.GetString(info.stuObject.szObjectType);
+            var objectType = Encoding.Default.GetString(info.stuObject.szObjectType);
                 
             var eventInfo = new EventInfo {
                 EventId = info.nEventID,

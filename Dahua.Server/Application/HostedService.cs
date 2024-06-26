@@ -1,6 +1,4 @@
-﻿using Microsoft.AspNetCore.SignalR;
-
-namespace Dahua.Server.Application;
+﻿namespace Dahua.Server.Application;
 
 public class HostedService(IDahuaService dahuaService, ILogger<HostedService> logger) : BackgroundService {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken) {
