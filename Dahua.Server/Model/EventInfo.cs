@@ -7,11 +7,11 @@ public class EventInfo {
     
     public int ChannelId { get; set; }
     
-    public NET_POINT[] DetectRegion { get; set; }
+    public ICollection<Point> DetectRegion { get; set; }
     
-    public NET_POINT Center { get; set; }
+    public Point Center { get; set; }
     
-    public NET_A_RECT_EX BoundingBox { get; set; }
+    public BoundingBox BoundingBox { get; set; }
     
     public string ObjectType { get; set; }
     

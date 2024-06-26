@@ -2,9 +2,9 @@
 
 namespace Dahua.Server.Application;
 
-public class HostedService(IHubContext<EventHub> hub, IDahuaService dahuaService, ILogger<HostedService> logger) : BackgroundService {
+public class HostedService(IDahuaService dahuaService, ILogger<HostedService> logger) : BackgroundService {
     protected override async Task ExecuteAsync(CancellationToken stoppingToken) {
-        logger.LogInformation("HostedService execute");
+        logger.LogTrace("Background service starts");
 
         dahuaService.Start();
     }

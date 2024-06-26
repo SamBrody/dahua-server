@@ -24,7 +24,6 @@ public class DahuaService : IDahuaService {
     private IntPtr m_LoginID = IntPtr.Zero;
     private NET_DEVICEINFO_Ex m_DeviceInfo;
     private Int64 m_ID = 1;
-    private IntPtr m_RealPlayID = IntPtr.Zero;
     private IntPtr m_EventID = IntPtr.Zero;
     
     public DahuaService(
@@ -42,6 +41,8 @@ public class DahuaService : IDahuaService {
     }
 
     public void Start() {
+        logger.LogTrace("Starting DahuaService...");
+        
         NETClient.Init(m_DisConnectCallBack, IntPtr.Zero, null);
         NETClient.SetAutoReconnect(m_ReConnectCallBack, IntPtr.Zero);
         Login();
@@ -62,18 +63,22 @@ public class DahuaService : IDahuaService {
 
         if (type == EM_EVENT_IVS_TYPE.CROSSREGIONDETECTION) {
             var info = (NET_DEV_EVENT_CROSSREGION_INFO)Marshal.PtrToStructure(pEventInfo, typeof(NET_DEV_EVENT_CROSSREGION_INFO));
+
+            var center = info.stuObject.Center;
+            var boundingBox = info.stuObject.BoundingBox;
+            var objectType = System.Text.Encoding.Default.GetString(info.stuObject.szObjectType);
                 
             var eventInfo = new EventInfo {
                 EventId = info.nEventID,
                 ChannelId = info.nChannelID,
-                DetectRegion = info.DetectRegion.Take(4).ToArray(),
-                Center = info.stuObject.Center,
-                BoundingBox = info.stuObject.BoundingBox,
-                ObjectType = System.Text.Encoding.Default.GetString(info.stuObject.szObjectType),
+                DetectRegion = info.DetectRegion.Take(4).Select(x => new Point(Convert.ToInt16(x.nx), Convert.ToInt16(x.ny))).ToList(),
+                Center = new Point(Convert.ToInt16(center.nx), Convert.ToInt16(center.ny)) ,
+                BoundingBox = new BoundingBox(boundingBox.left, boundingBox.top, boundingBox.right, boundingBox.bottom),
+                ObjectType = objectType,
                 RegisteredAt = info.UTC.ToDateTime().ToUniversalTime(),
             };
                 
-            logger.LogInformation($"Detect {type} event");
+            logger.LogTrace($"Detect {type} event");
 
             hub.Clients.All.SendAsync("Receive", eventInfo);
         }
@@ -96,5 +101,7 @@ public class DahuaService : IDahuaService {
         if (IntPtr.Zero == m_LoginID) {
             logger.LogError(NETClient.GetLastError());
         }
+        
+        logger.LogInformation($"User {cfg.Username} successful login to {cfg.Ip}:{cfg.Port}");
     }
 }
