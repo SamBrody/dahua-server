@@ -1,8 +1,8 @@
 ﻿using System.Runtime.InteropServices;
 using System.Text;
+using System.Threading.Channels;
 using Dahua.Server.Configuration;
 using Dahua.Server.Model;
-using Microsoft.AspNetCore.SignalR;
 using Microsoft.Extensions.Options;
 using NetSDKCS;
 
@@ -16,7 +16,7 @@ public interface IDahuaService {
 public class DahuaService : IDahuaService {
     private readonly DahuaOptions cfg;
     private readonly ILogger logger;
-    private readonly IHubContext<EventHub> hub;
+    private readonly ChannelWriter<EventInfo> writer;
     
     private static fDisConnectCallBack m_DisConnectCallBack;
     private static fHaveReConnectCallBack m_ReConnectCallBack;
@@ -30,11 +30,11 @@ public class DahuaService : IDahuaService {
     public DahuaService(
         IOptions<DahuaOptions> options,
         ILogger<DahuaService> logger,
-        IHubContext<EventHub> hub
+        ChannelWriter<EventInfo> writer
     ) {
         cfg = options.Value;
         this.logger = logger;
-        this.hub = hub;
+        this.writer = writer;
 
         m_DisConnectCallBack = DisConnectCallBack;
         m_ReConnectCallBack = ReConnectCallBack;
@@ -42,7 +42,7 @@ public class DahuaService : IDahuaService {
     }
 
     public void Start() {
-        logger.LogTrace("Starting DahuaService...");
+        logger.LogTrace("Running DahuaService...");
         
         NETClient.Init(m_DisConnectCallBack, IntPtr.Zero, null);
         NETClient.SetAutoReconnect(m_ReConnectCallBack, IntPtr.Zero);
@@ -79,9 +79,12 @@ public class DahuaService : IDahuaService {
                 RegisteredAt = info.UTC.ToDateTime().ToUniversalTime(),
             };
                 
-            logger.LogTrace($"Detect {type} event");
+            logger.LogTrace($"{type} event handled");
 
-            hub.Clients.All.SendAsync("Receive", eventInfo);
+            var isSuccess = writer.TryWrite(eventInfo);
+
+            if (isSuccess) logger.LogTrace($"Event {eventInfo.EventId} successful recorded to channel");
+            if (isSuccess == false) logger.LogError($"An error occurred while writing an event {eventInfo.EventId} to the channel");
         }
 
         return 0;
