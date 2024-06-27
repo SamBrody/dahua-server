@@ -91,11 +91,11 @@ public class DahuaService : IDahuaService {
     }
     
     private void DisConnectCallBack(IntPtr lLoginID, IntPtr pchDVRIP, int nDVRPort, IntPtr dwUser) {
-        logger.LogInformation("Dahua --- DISCONNECTED");
+        logger.LogWarning("Dahua --- DISCONNECTED");
     }
     
     private void ReConnectCallBack(IntPtr lLoginID, IntPtr pchDVRIP, int nDVRPort, IntPtr dwUser) {
-        logger.LogInformation("Dahua --- RECONNECT");
+        logger.LogWarning("Dahua --- RECONNECT");
     }
     
     private void Login() {
@@ -106,6 +106,6 @@ public class DahuaService : IDahuaService {
             logger.LogError(NETClient.GetLastError());
         }
         
-        logger.LogInformation($"User {cfg.Username} successful login to {cfg.Ip}:{cfg.Port}");
+        logger.LogTrace($"User {cfg.Username} successful login to {cfg.Ip}:{cfg.Port}");
     }
 }
