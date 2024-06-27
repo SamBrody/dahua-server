@@ -1,6 +1,8 @@
 ﻿namespace Dahua.Server.Model;
 
 public class EventInfo {
+    public string DeviceSerialNubmer { get; set; }
+    
     public int EventId { get; set; }
     
     public int ChannelId { get; set; }

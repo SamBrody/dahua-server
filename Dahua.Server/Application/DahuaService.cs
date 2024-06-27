@@ -70,6 +70,7 @@ public class DahuaService : IDahuaService {
             var objectType = Encoding.Default.GetString(info.stuObject.szObjectType);
                 
             var eventInfo = new EventInfo {
+                DeviceSerialNubmer = m_DeviceInfo.sSerialNumber,
                 EventId = info.nEventID,
                 ChannelId = info.nChannelID,
                 DetectRegion = info.DetectRegion.Take(4).Select(x => new Point(Convert.ToInt16(x.nx), Convert.ToInt16(x.ny))).ToList(),
